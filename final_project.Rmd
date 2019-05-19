@@ -1,0 +1,56 @@
+---
+title: "final_project"
+author: "InyeobKim"
+date: "5/16/2019"
+output: html_document
+---
+
+1.1 Load libraries
+```{r setup, include=FALSE}
+library(tidyverse)
+library(tidyr)
+```
+
+1.2 Load data
+```{r}
+mydat <- read.csv("./suicide.csv")
+mydat
+```
+
+1.3 File structure and content
+```{r}
+summary(mydat)
+glimpse(mydat)
+```
+We find:
+age: There are several ranges of age(5-14, 15-24, 35-54, 55-74, 75+)
+suicides_no: 
+population:
+suicides.100k.pop:
+country.year: This attribute will be dropped since it is a duplicate data of country and year
+HID.for.year: 
+generation: 
+
+1.4 Missing values
+: Properly informed with missing data is very significant, because they indicate how much we do not know about the data set. Additionally, many models can break down when missing values are involved, so certain rows with missing data should be either removed or values need to be estimated with appropriate method.
+```{r}
+sum(is.na(mydat))
+```
+It seems there are over 19000 missing data in our data set. We need to cope with this problem before we actually plunge into exploring the data.
+
+1.5 Reformating dataset
+: Tidying the data set is necesary for a better data exploring.
+```{r}
+# dropping unnecessary columns
+mydat <- mydat %>% 
+  select(-HDI.for.year,  -suicides.100k.pop, -country.year)
+```
+Dropping HDI.for.year column made 0 missing value, which is very fortunate.
+```{r}
+# changing names for better understanding
+names(mydat)[5] <- "num_suicide"
+names(mydat)[6] <- "gdp"
+mydat
+sum(is.na(mydat))
+```
+First, the HDI.for.year column is dropped since there are too much missing information. 

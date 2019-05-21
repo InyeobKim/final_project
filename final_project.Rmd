@@ -54,11 +54,69 @@ names(tidy_tab)[7] <- "r2"
 ```
 <p>Above code includes reading a csv data file and some data wrangling. The raw data was initially checked for any missing data or any incorrect data, but there were none, so a code to clean up the data set was omitted. However, since the scale of gpa is from 0.0 to 4.0, observations that contains incorrect gpa value needed to be filtered. As stated before, in the introduction, since there are 3 types of resource_type, it needs 3-1=2 number of dummy variables for the model parameters, which are r1 and r2.</p>
 ![](figure1.png)
-<h4>1.4 Data scaling</h4><br>
-<p>Before implementing a code to plot visual images, since there are several data that have different scales, we will standardize the data for better accuracy.</p>
+
+
+<h4>1.4 Visual plots of variables</h4><br>
+<h6> Gpa by study_hour and sleep_hour </h6><br>
+```{r}
+tidy_tab %>% 
+  ggplot(aes(x=study_hour, y=gpa)) +
+  geom_point(color = "orange") +
+  geom_smooth(method = lm) +
+  labs(title = "GPA by study hour",
+       x = "Study hour",
+       y = "GPA") +
+  scale_x_continuous(breaks = seq(0, 10, 2))
+
+tidy_tab %>% 
+  ggplot(aes(x=sleep_hour, y=gpa)) +
+  geom_point(color = "deepskyblue3") +
+  geom_smooth(method = lm) +
+  labs(title = "GPA by sleep hoour",
+       x = "Sleep hour",
+       y = "GPA") +
+  scale_x_continuous(breaks = seq(0, 10, 1))
+```
+<p>It seems there is some linear relationship between GPA and sleep_hour and study_hour with some outliers. Removing those weird values will definitely increase the accuracy of the model.</p><br>
+
+```{r}
+# removing weird values
+useless_rows1 <- which(tidy_tab$study_hour >= 4 & tidy_tab$gpa <= 2.0)
+useless_rows2 <- which(tidy_tab$sleep_hour >= 6.5 & tidy_tab$gpa <= 2.5)
+
+# there are some overlaying data, so you must use union function in order not to remove any other data
+useless_rows <- union(useless_rows1, useless_rows2)
+
+new_tidy_tab <- tidy_tab[-useless_rows,]
+```
+<p>We cleaned up the data by dropping certain useless rows.</p><br>
+```{r}
+# checking the plot again
+ new_tidy_tab %>% 
+  ggplot(aes(x=study_hour, y=gpa)) +
+  geom_point(color = "orange") +
+  geom_smooth(method = lm) +
+  labs(title = "GPA by study hour",
+       x = "Study hour",
+       y = "GPA") +
+  scale_x_continuous(breaks = seq(0, 10, 2))
+
+new_tidy_tab %>% 
+  ggplot(aes(x=sleep_hour, y=gpa)) +
+  geom_point(color = "deepskyblue3") +
+  geom_smooth(method = lm) +
+  labs(title = "GPA by sleep hoour",
+       x = "Sleep hour",
+       y = "GPA") +
+  scale_x_continuous(breaks = seq(0, 10, 1))
+```
+<p>Plots are much better now!!</p><br>
+
+<h4>1.5 Data scaling</h4><br>
+<p>Before implementing a code to plot visual images, since there are several data that have different scales, we will standardize the data for better accuracy.</p><br>
 ```{r}
 # Could not find the better way to standardize attributes
-std_tab <- tidy_tab %>% 
+std_tab <- new_tidy_tab %>% 
   mutate(mean_study_hour = mean(study_hour)) %>% 
   mutate(sd_study_hour = sd(study_hour)) %>%
   mutate(mean_freq_TA = mean(freq_TA)) %>% 
@@ -79,6 +137,7 @@ names(std_tab)[5] <- "freq_TA"
 names(std_tab)[6] <- "sleep_hour"
 
 ```
+
 <p>We will now use the std_gpa data set instead of new_gpa for building a model.</p><br>
 
 <h2>2 Analysis</h2><br>
@@ -99,12 +158,12 @@ chart.Correlation(std_tab, histogram = TRUE)
 </ui>
 <br>
 
-<p>This matrix form of correlation plot helps you to visualize the association between variables. For instance, if you see the second cell from the top, where the x value is study_hour(column) and y value is gpa(row), it says 0.50 with three red stars. This means that study_hour and gpa are correlated in 50% and it is significant. If you see the box on the second row in the first column, it seems there is a linear relationship between the two, but not strong. If you see the scatter plot on the second column, 5th row, it seems there is no patter between the two variables(x=freq_TA, y=study_hour). The points are scattered all over the place. Additionally, if you see the one on the first column, 5th row, there exists somewhat linear relationship between the sleep_hour and the gpa with some weird data, but again, not strong. Just like these examples, association between all the variables can be checked visually. Let’s actually go see more accurate numerical values correlation between the variables.</p>
+<p>This matrix form of correlation plot helps you to visualize the association between variables. For instance, if you see the second cell from the top, where the x value is study_hour(column) and y value is gpa(row), it says 0.63 with three red stars. This means that study_hour and gpa are correlated by 63% and it is significant. If you see the box on the second row in the first column, it seems there is a linear relationship between the two, but not strong. If you see the scatter plot on the second column, 5th row, it seems there is no patter between the two variables(x=freq_TA, y=study_hour). The points are scattered all over the place. Additionally, if you see the one on the first row, 6th row, there exists a another linear relationship between the sleep_hour and the gpa with 75% correlation, somewhat strong. This scatter plot can be checked by looking at the first column, 6th row. Just like these examples, association between all the variables can be checked visually. Let’s actually go see more accurate numerical values correlation between the variables.</p>
 ```{r}
 mat <- cor(std_tab)
 mat
 ```
-<p>This table shows more accurate correlation numerically between variables. Like we saw in the above example, the correlation between study_hour and gpa was 0.5. Here, it says 0.50136192(more accurate).The table contains the Pearson correlation coefficients and test results. Notice that the correlation in the main diagonal are all equal to 1. This is because a variable is always perfectly correlated with itself. However, we cannot identify p-values this table.</p><br>
+<p>This table shows more accurate correlation numerically between variables. Like we saw in the above example, the correlation between study_hour and gpa was 0.63. Here, it says 0.6318967(more accurate).The table contains the Pearson correlation coefficients and test results. Notice that the correlation in the main diagonal are all equal to 1. This is because a variable is always perfectly correlated with itself. However, we cannot identify p-values this table.</p><br>
 
 <h4>2.2 Building a multiple regression model</h4><br>
 <p>Now, we saw the correlation between the variables and its significance, let’s plunge into building a multivariate linear regression model using this data sample. The model that we are looking for will be,</p><br>
@@ -120,10 +179,10 @@ summary(model1)
 <p>The first thing we can pull from the above is the individual parameter estimates. If you want to use all of the parameter estimates for the model, the model will be the following.
 
 <center>
-<h6>$\hat{y}$  =  0.2934 + (0.2974) \* study_hour + (-0.3383) \* r1 + (-0.4413) \* r2 + (0.1305) \* freq_TA + (0.4268) \* sleep_hour + (-0.1087) \* relationship</h6><br>
+<h6>$\hat{y}$  =  0.174836 + (0.332914) \* study_hour + (-0.230984) \* r1 + (-0.383016) \* r2 + (0.002749) \* freq_TA + (0.563214) \* sleep_hour + (-0.0.007222) \* relationship</h6><br>
 </center>
 
-<p>The value of Adj R-sq is 0.3851, which is fairly low in this case. This means 38.51% of y-value can be predicted from study_hour, r1, r2, freq_TA, sleep_hour and relationship predictors. The reason why we want to focus on Adj R-Sq instead of R-Square is that each of the predictors comes with the cost of degree of freedom, not counting intercept. You can see that the df value of the whole model above is 6, which implies all the predictors. Let’s say we add a 7 th predictor. Then the R-sq value will probably go up, but that does not take into the account that we are adding another degree of freedom. That will adjust our model if we add extra predictor, degrees of freedom 7, and the AdjRsq will yield a result by taking 7 th degree of freedom into account.</p><br>
+<p>The value of Adj R-sq is 0.6084, which is ok in this case. This means 60.85% of y-value can be predicted from study_hour, r1, r2, freq_TA, sleep_hour and relationship predictors. The reason why we want to focus on Adj R-Sq instead of R-Square is that each of the predictors comes with the cost of degree of freedom, not counting intercept. You can see that the df value of the whole model above is 6, which implies all the predictors. Let’s say we add a 7 th predictor. Then the R-sq value will probably go up, but that does not take into the account that we are adding another degree of freedom. That will adjust our model if we add extra predictor, degrees of freedom 7, and the AdjRsq will yield a result by taking 7 th degree of freedom into account.</p><br>
 <p>Now we are ready to analyze the overall f-test. Null hypothesis and the alternative hypothesis will be the following.</p><br>
 
 <center>
@@ -164,7 +223,7 @@ summary(test)
 model2 <- lm(gpa ~ study_hour + sleep_hour, data = std_tab)
 anova(model2, model1)
 ```
-<p>Based on the p-value of 0.2702, we fail to reject the null hypothesis and conclude that we do not have evidence to believe that the model1 is significantly better. We can decide that it is not necessary to include any other predictors except study_hour and sleep_hour.</p><br>
+<p>Based on the p-value of 0.5576, we fail to reject the null hypothesis and conclude that we do not have evidence to believe that the model1 is significantly better. We can decide that it is not necessary to include any other predictors except study_hour and sleep_hour.</p><br>
 
 
 <center>

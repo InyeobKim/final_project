@@ -163,7 +163,7 @@ chart.Correlation(std_tab, histogram = TRUE)
 mat <- cor(std_tab)
 mat
 ```
-<p>This table shows more accurate correlation numerically between variables. Like we saw in the above example, the correlation between study_hour and gpa was 0.63. Here, it says 0.6318967(more accurate).The table contains the Pearson correlation coefficients and test results. Notice that the correlation in the main diagonal are all equal to 1. This is because a variable is always perfectly correlated with itself. However, we cannot identify p-values in this table.</p><br>
+<p>This table shows more accurate correlation numerically between variables. Like we saw in the above example, the correlation between study_hour and gpa was 0.63. Here, it says 0.6318967(more accurate).The table contains the correlation coefficients and test results. Notice that the correlation in the main diagonal are all equal to 1. This is because a variable is always perfectly correlated with itself. However, we cannot identify p-values in this table.</p><br>
 
 <h4>2.2 Building a multiple regression model</h4><br>
 <p>Now, we saw the correlation between the variables and its significance, let’s plunge into building a multivariate linear regression model using this data sample. The model that we are looking for will be,</p><br>

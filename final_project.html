@@ -344,7 +344,7 @@ Plots are much better now!!
 </h4>
 <br>
 <p>
-Before implementing a code to plot visual images, since there are several data that have different scales, we will standardize the data for better accuracy.
+Before we start working on building a model, since there are several data that have different scales, we will standardize the data for better accuracy.
 </p>
 <p><br></p>
 <pre class="r"><code># Could not find the better way to standardize attributes
@@ -368,7 +368,7 @@ names(std_tab)[2] &lt;- &quot;study_hour&quot;
 names(std_tab)[5] &lt;- &quot;freq_TA&quot;
 names(std_tab)[6] &lt;- &quot;sleep_hour&quot;</code></pre>
 <p>
-We will now use the std_gpa data set instead of new_gpa for building a model.
+We will now use the std_gpa data set instead of new_tidy_tab for building a model.
 </p>
 <p><br></p>
 <h2>
@@ -441,7 +441,7 @@ mat</code></pre>
 ## sleep_hour    1.00000000 -0.023128355
 ## relationship -0.02312835  1.000000000</code></pre>
 <p>
-This table shows more accurate correlation numerically between variables. Like we saw in the above example, the correlation between study_hour and gpa was 0.63. Here, it says 0.6318967(more accurate).The table contains the Pearson correlation coefficients and test results. Notice that the correlation in the main diagonal are all equal to 1. This is because a variable is always perfectly correlated with itself. However, we cannot identify p-values this table.
+This table shows more accurate correlation numerically between variables. Like we saw in the above example, the correlation between study_hour and gpa was 0.63. Here, it says 0.6318967(more accurate).The table contains the Pearson correlation coefficients and test results. Notice that the correlation in the main diagonal are all equal to 1. This is because a variable is always perfectly correlated with itself. However, we cannot identify p-values in this table.
 </p>
 <p><br></p>
 <h4>
@@ -505,7 +505,7 @@ Now we are ready to analyze the overall f-test. Null hypothesis and the alternat
 <span class="math inline">\(H_{0}\)</span>: <span class="math inline">\(b_{1}\)</span> = <span class="math inline">\(b_{2}\)</span> = <span class="math inline">\(b_{3}\)</span> = <span class="math inline">\(b_{4}\)</span> = <span class="math inline">\(b_{5}\)</span> = <span class="math inline">\(b_{6}\)</span> = 0
 </p>
 <p>
-<span class="math inline">\(H_{a}\)</span>: At least one of <span class="math inline">\(b_{1}\)</span>, <span class="math inline">\(b_{2}\)</span>, <span class="math inline">\(b_{3}\)</span>, <span class="math inline">\(b_{4}\)</span>, <span class="math inline">\(b_{5}\)</span>, <span class="math inline">\(b_{6}\)</span> is not 0.
+<span class="math inline">\(H_{a}\)</span>: At least one of <span class="math inline">\(b_{1}\)</span>, <span class="math inline">\(b_{2}\)</span>, <span class="math inline">\(b_{3}\)</span>, <span class="math inline">\(b_{4}\)</span>, <span class="math inline">\(b_{5}\)</span> and <span class="math inline">\(b_{6}\)</span> is not 0.
 </p>
 <p>
 (At least one of them is useful in predicting y, but we don’t necessarily know which one is)
@@ -533,7 +533,7 @@ The Null hypothesis and alternative hypothesis will be the following.
 <span class="math inline">\(H_{0}\)</span>: <span class="math inline">\(b_{2}\)</span> = <span class="math inline">\(b_{3}\)</span> = <span class="math inline">\(b_{4}\)</span> = <span class="math inline">\(b_{6}\)</span> = 0
 </p>
 <p>
-<span class="math inline">\(H_{a}\)</span>: At least one of <span class="math inline">\(b_{2}\)</span>, <span class="math inline">\(b_{3}\)</span>, <span class="math inline">\(b_{4}\)</span>, <span class="math inline">\(b_{6}\)</span> is not 0.
+<span class="math inline">\(H_{a}\)</span>: At least one of <span class="math inline">\(b_{2}\)</span>, <span class="math inline">\(b_{3}\)</span>, <span class="math inline">\(b_{4}\)</span> and <span class="math inline">\(b_{6}\)</span> is not 0.
 </p>
 <p>
 (At least one of them is useful in predicting y, but we don’t necessarily know which one is)
